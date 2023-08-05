@@ -78,7 +78,7 @@ parser MyParser(packet_in packet,
                 inout standard_metadata_t standard_metadata) {
 
     state start {
-        //meta.int_hdrs_number = 0;
+        meta.int_hdrs_number = 0;
         transition parse_ethernet;
     }
 
@@ -92,7 +92,7 @@ parser MyParser(packet_in packet,
 
     state parse_int{
         packet.extract(hdr.int_header.next);
-        //meta.int_hdrs_number = meta.int_hdrs_number + 1;
+        meta.int_hdrs_number = meta.int_hdrs_number + 1;
         transition select(hdr.int_header.last.next_header){
             TYPE_INT: parse_int;
             TYPE_IPV4: parse_ipv4;
@@ -206,12 +206,12 @@ register <bit<32>>(1) logical_clock;
            hdr.ethernet.etherType = TYPE_INT;
            hdr.int_header[0].next_header = TYPE_IPV4;
         }else if(meta.switch_meta == SINK){
-            /*if(meta.int_hdrs_number == 1){
+            if(meta.int_hdrs_number == 1){
                hdr.int_header.pop_front(1);
             }else if(meta.int_hdrs_number == 2){
                hdr.int_header.pop_front(2);
-            }*/
-            hdr.int_header.pop_front(2);
+            }
+            //hdr.int_header.pop_front(2);
             hdr.int_header[0].setInvalid();
             hdr.ethernet.etherType = TYPE_IPV4;
         }
